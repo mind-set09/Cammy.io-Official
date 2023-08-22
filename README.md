@@ -26,7 +26,7 @@ Cammy.io is a Discord bot designed to create a captivating Pokémon RPG experien
 - and much more!
 
 ## Installation
-1. Invite Cammy.io to your server by [clicking here]([(https://discord.com/oauth2/authorize?client_id=1141577311364337724&scope=bot&permissions=0)]).
+1. Invite Cammy.io to your server by clicking on this link https://discord.com/oauth2/authorize?client_id=1141577311364337724&scope=bot&permissions=0
 2. Grant the necessary permissions for Cammy.io to function properly.
 3. Configure the bot's settings as per your server's preferences (see [Configuration](#configuration)).
 
