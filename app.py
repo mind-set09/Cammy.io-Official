@@ -5,7 +5,7 @@ from disnake.ext import commands
 from disnake.ui import Button, View
 
 # Database models
-from models import Trainer, Pokemon
+from .models import Trainer, Pokemon
 
 bot = commands.Bot(command_prefix='/')
 
