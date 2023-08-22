@@ -1,48 +1,66 @@
-# Bot
-disnake==2.6.0
-python-dotenv==0.21.0
-requests>=2.10,<2.21
+# Main Imports
+disnake           # A modern, Pythonic, asynchronous library for Discord API interaction.
 
-# Database   
-pymongo==4.3.3
-motor==3.1.1
+# Environment 
+python-dotenv     # Reads settings from .env files and sets them as environment variables.
 
-# API Wrappers
-pokepy==0.5.2
-pillow==9.3.0
+# HTTP Requests
+requests          # Python HTTP library for making requests and handling responses.
 
-# Webserver
-fastapi==0.88.0  
-uvicorn==0.20.0
+# Database
+psycopg2-binary   # PostgreSQL adapter for Python.
+databases[sqlite] # Async database support for Python using the `database` library with SQLite extension.
 
-# Caching
-aiocache==0.11.1
+# Migrations
+alembic           # A database migrations tool for SQLAlchemy.
 
-# Async utils 
-aiofiles==22.1.0
+# Async Tasks
+celery            # Distributed task queue for asynchronous tasks.
 
-# Scheduling
-apscheduler==3.9.1
+# Media Downloading
+youtube-dl        # Command-line program to download videos from YouTube and other sites.
 
-# Metrics
-prometheus-client==0.15.0
+# Images  
+Pillow            # Python Imaging Library (PIL), which adds support for opening, manipulating, and saving image files.
 
-# ORM
-pydantic==1.10.2
-sqlalchemy==1.4.41
-alembic==1.9.1
+# Web API
+fastapi           # A modern, fast, web framework for building APIs with Python 3.7+.
 
-# Linting/Formatting
-pylint==2.15.9
-black==22.12.0
+# Documentation
+mkdocs            # A static site generator that builds HTML documentation from markdown.
+sphinx            # Python documentation generator.
 
 # Testing
-pytest==7.2.0
-pytest-asyncio==0.20.3
-httpx==0.23.1
+pytest            # A testing framework for Python.
+pytest-asyncio     # Pytest plugin for testing asyncio code.
+pytest-mock       # Pytest plugin for mocking and spying.
+
+# Code Quality
+pylint            # A static code analysis tool for finding errors in Python code.
+flake8            # A tool for style guide enforcement and linting in Python.
+
+# Deploys
+docker            # Platform for developing, shipping, and running applications using containers.
+ansible           # An automation tool for managing configuration and deployments.
+
+# Monitoring
+prometheus-client # Python client for the Prometheus monitoring system.
+grafana-api       # Python bindings for the Grafana HTTP API.
 
 # Debugging
-loguru==0.6.0
+ipdb              # IPython debugger, an enhanced alternative to the built-in pdb debugger.
 
-# HTTP Client
-urllib3==1.24.3
+# Async
+anyio             # Asynchronous concurrency framework.
+
+# API Clients
+httpx             # A fully featured HTTP client for Python 3, which provides sync and async APIs.
+ratelimit         # A simple Python rate-limiting library.
+
+# Notifications
+pynotifier        # Python package for sending cross-platform desktop notifications.
+
+# Authentication
+pyjwt             # Python library for encoding and decoding JSON Web Tokens (JWT).
+argon2-cffi       # Python bindings for the Argon2 password hashing algorithm.
+
