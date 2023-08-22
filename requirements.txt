@@ -1,9 +1,9 @@
 # Bot
 disnake==2.6.0
 python-dotenv==0.21.0
-requests==2.20.*
+requests>=2.10,<2.21
 
-# Database  
+# Database   
 pymongo==4.3.3
 motor==3.1.1
 
@@ -12,13 +12,13 @@ pokepy==0.5.2
 pillow==9.3.0
 
 # Webserver
-fastapi==0.88.0
+fastapi==0.88.0  
 uvicorn==0.20.0
 
 # Caching
 aiocache==0.11.1
 
-# Async utils
+# Async utils 
 aiofiles==22.1.0
 
 # Scheduling
