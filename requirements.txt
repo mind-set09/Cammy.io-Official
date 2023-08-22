@@ -3,8 +3,8 @@ disnake==2.6.0
 python-dotenv==0.21.0
 requests==2.20.*
 
-# Database
-pymongo==4.3.3  
+# Database  
+pymongo==4.3.3
 motor==3.1.1
 
 # API Wrappers
@@ -39,10 +39,10 @@ black==22.12.0
 # Testing
 pytest==7.2.0
 pytest-asyncio==0.20.3
-httpx==0.23.1 
+httpx==0.23.1
 
 # Debugging
 loguru==0.6.0
 
 # HTTP Client
-urllib3==1.26.13
+urllib3==1.24.3
