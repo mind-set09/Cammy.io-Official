@@ -1,44 +1,44 @@
 # Bot
-disnake==2.6.0
-python-dotenv==0.21.0
+disnake
+python-dotenv
 
 # Database
-pymongo==4.3.3
-motor==3.1.1
+pymongo
+motor
 
 # API Wrappers
-pokepy==0.6.2
-pillow==9.3.0 
+pokepy
+pillow
 
 # Webserver
-fastapi==0.88.0
-uvicorn==0.20.0
+fastapi
+uvicorn
 
 # Caching
-aiocache==0.11.1
+aiocache
 
 # Async utils
-aiofiles==22.1.0
+aiofiles
 
 # Scheduling
-apscheduler==3.9.1
+apscheduler
 
 # Metrics
-prometheus-client==0.15.0
+prometheus-client
 
 # ORM
-pydantic==1.10.2
-sqlalchemy==1.4.41
-alembic==1.9.1
+pydantic
+sqlalchemy
+alembic
 
 # Linting/Formatting
-pylint==2.15.9
-black==22.12.0
+pylint
+black
 
 # Testing
-pytest==7.2.0
-pytest-asyncio==0.20.3
-httpx==0.23.1
+pytest
+pytest-asyncio
+httpx
 
 # Debugging
-loguru==0.6.0
+loguru
