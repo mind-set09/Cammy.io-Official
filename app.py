@@ -1,107 +1,64 @@
+import os
 import disnake
 from disnake.ext import commands
-from pokepy import V2Client
-from pymongo import MongoClient
+from disnake.ui import Button, View
+from pokedex import pokedex
 
-# Bot 
-intents = disnake.Intents.default()
-bot = commands.Bot(intents=intents)
+# Database models
+from models import Trainer, Pokemon
 
-# MongoDB
-cluster = MongoClient("mongo_uri")
-db = cluster["pokemon"]
-trainers = db["trainers"]
-
-# PokeAPI
-poke_client = V2Client()
-
-# Embed helpers
-async def get_name_embed():
-  embed = disnake.Embed(title="What is your name?")
-  return embed
-
-async def get_starter_embed(starters):
-  embed = disnake.Embed(title="Choose a starter:")
-  for starter in starters:
-    embed.add_field(name=starter.name, value="\n".join(starter.types))
-  return embed
-
-async def get_confirm_embed(trainer, starter):
-  embed = disnake.Embed(title="Let's go!")
-  embed.set_thumbnail(url=starter.sprite_url)
-  embed.add_field(name="Trainer", value=trainer.name)
-  embed.add_field(name="Starter", value=starter.name)
-  return embed
+bot = commands.Bot(command_prefix='/')
 
 @bot.slash_command()
 async def start(ctx):
 
-  # Get name
-  name_embed = await get_name_embed()
-  await ctx.send(embed=name_embed)
+    # Display starter select screen
+    await select_starter(ctx)
+    
+    # Wait for starter selection 
+    starter_pokemon = await get_starter_selection(ctx)
+    
+    # Create trainer
+    trainer = Trainer(id=ctx.author.id, name=ctx.author.name, starter=starter_pokemon)
+    
+    # Save trainer to DB
+    await trainer.save()
+    
+    # Display confirmation message
+    await display_confirmation(ctx, trainer)
 
-  name_msg = await bot.wait_for('message')
-  name = name_msg.content
+async def select_starter(ctx):
 
-  # Get starters
-  starters = await fetch_starters()
-  starter_embed = await get_starter_embed(starters)
+    # Create view with starter buttons
+    view = View()
+    for pokemon in ['Bulbasaur', 'Charmander', 'Squirtle']:
+        button = Button(label=pokemon)
+        view.add_item(button)
 
-  await ctx.send(embed=starter_embed)
+    # Display starter selection embed    
+    embed = disnake.Embed(title='Pick a Starter', color=0x00FF00)
+    await ctx.respond(embed=embed, view=view)
 
-  res = await bot.wait_for('click')
-  starter_name = res.component.label
-  
-  # Initialize trainer
-  for starter in starters:
-    if starter.name == starter_name:
-      break
+async def get_starter_selection(ctx):
+    
+    # Wait for button click
+    button_ctx = await bot.wait_for('button_click')
 
-  trainer = Trainer(id=ctx.author.id, name=name, starter=starter)
+    # Lookup pokemon
+    pokemon = Pokemon.get(name=button_ctx.component[0].label)
 
-  # Confirmation
-  confirm_embed = await get_confirm_embed(trainer, starter)
-  await ctx.send(embed=confirm_embed)
+    return pokemon
 
-  # Save trainer
-  result = await save_trainer(trainer)
-  if result.acknowledged:
-    await ctx.send("Trainer saved!")
-  else:
-    await ctx.send("Error saving trainer!")
+async def display_confirmation(ctx, trainer):
 
-# Trainer model
-class Trainer:
-  def __init__(self, id, name, starter):
-    self.id = id
-    self.name = name
-    self.starter = starter
+    # Lookup pokemon info
+    pokemon = pokedex[trainer.starter.name]
+    
+    # Create embed        
+    embed = disnake.Embed(title='You chose:', color=0x00FF00)
+    embed.add_field(name=trainer.starter.name, value=pokemon['description'])
+    embed.set_thumbnail(url=pokemon['sprite_url']) 
 
-# Pokemon model
-class Pokemon:
-  def __init__(self, name, types, sprite):
-    self.name = name
-    self.types = types
-    self.sprite_url = sprite
-
-# Get starter data  
-async def fetch_starters():
-  url = "https://pokeapi.co/api/v2/pokemon?limit=3"
-  async with aiohttp.ClientSession() as session:
-    async with session.get(url) as resp:
-      data = await resp.json()
-
-  return [Pokemon(p['name'], p['types'], p['sprites']['front_default']) for p in data['results']]
-
-# Save trainer
-async def save_trainer(trainer):
-  trainer_data = {
-    "_id": trainer.id,
-    "name": trainer.name, 
-    "starter": trainer.starter
-  }
-
-  trainers.insert_one(trainer_data)
-  return True
-
-bot.run(os.getenv("TOKEN"))
+    await ctx.send(embed=embed)
+    
+bot.run(os.environ['TOKEN'])
