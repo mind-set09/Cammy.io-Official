@@ -5,6 +5,9 @@ from disnake.ext import commands
 from disnake.ui import Button, View
 from databases import Database
 
+# Database models
+from .models import Trainer, Pokemon
+
 class Trainer:
     def __init__(self, id, name, starter):
         self.id = id
@@ -34,8 +37,6 @@ class Pokemon:
         self.description = description
         self.sprite_url = sprite_url
 
-# Database models
-from .models import Trainer, Pokemon
 
 bot = commands.Bot(command_prefix='/')
 
