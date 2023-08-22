@@ -3,6 +3,36 @@ import disnake
 import requests
 from disnake.ext import commands
 from disnake.ui import Button, View
+from databases import Database
+
+class Trainer:
+    def __init__(self, id, name, starter):
+        self.id = id
+        self.name = name
+        self.starter = starter
+
+    async def save(self):
+        # Connect to the database
+        database = Database(os.environ['DATABASE_URL'])
+        await database.connect()
+
+        # Define the query to insert a new trainer
+        query = """
+        INSERT INTO trainers (id, name, starter)
+        VALUES (:id, :name, :starter)
+        """
+        
+        # Execute the query with parameters
+        await database.execute(query, values={"id": self.id, "name": self.name, "starter": self.starter.name})
+
+        # Disconnect from the database
+        await database.disconnect()
+
+class Pokemon:
+    def __init__(self, name, description, sprite_url):
+        self.name = name
+        self.description = description
+        self.sprite_url = sprite_url
 
 # Database models
 from .models import Trainer, Pokemon
