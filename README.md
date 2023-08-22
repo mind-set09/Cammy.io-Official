@@ -51,7 +51,6 @@ To configure Cammy.io for your server, you can modify settings such as:
 - Battle mechanics and AI difficulty.
 - Experience and leveling system.
 - Available quests and rewards.
-- Bot prefixes and command settings.
 
 Refer to the bot's documentation or in-bot help for details on how to customize these settings.
 
