@@ -42,3 +42,6 @@ httpx
 
 # Debugging
 loguru
+
+# HTTP Client
+urllib3
