@@ -57,9 +57,6 @@ anyio             # Asynchronous concurrency framework.
 httpx             # A fully featured HTTP client for Python 3, which provides sync and async APIs.
 ratelimit         # A simple Python rate-limiting library.
 
-# Notifications
-pynotifier        # Python package for sending cross-platform desktop notifications.
-
 # Authentication
 pyjwt             # Python library for encoding and decoding JSON Web Tokens (JWT).
 argon2-cffi       # Python bindings for the Argon2 password hashing algorithm.
