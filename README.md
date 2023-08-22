@@ -2,7 +2,7 @@
 
 Welcome to Cammy.io, the Pokémon-themed RPG bot for Discord! Embark on an exciting adventure in the world of Pokémon, catch wild creatures, battle trainers, and become a Pokémon master.
 
-![Cammy.io Logo]([docs/images/logo.png](https://i.imgur.com/jCg9suD_d.jpg?maxwidth=520&shape=thumb&fidelity=high))
+![Cammy.io Logo]([https://i.imgur.com/jCg9suD_d.jpg?maxwidth=520&shape=thumb&fidelity=high](https://i.imgur.com/jCg9suD_d.jpg?maxwidth=520&shape=thumb&fidelity=high))
 
 ## Table of Contents
 - [Introduction](#introduction)
