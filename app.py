@@ -40,75 +40,51 @@ class Pokemon:
 
 bot = commands.Bot(command_prefix='/')
 
-@bot.slash_command()
-async def start(ctx):
+@bot.slash_command(name="start", description="Begin your Pokémon adventure!")
+async def start(ctx: Context):
+    try:
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == ctx.channel
 
-    # Display starter select screen
-    await select_starter(ctx)
-    
-    # Wait for starter selection 
-    starter_pokemon = await get_starter_selection(ctx)
-    
-    # Create trainer
-    trainer = Trainer(id=ctx.author.id, name=ctx.author.name, starter=starter_pokemon)
-    
-    # Save trainer to DB
-    await trainer.save()
-    
-    # Display confirmation message
-    await display_confirmation(ctx, trainer)
+        # Initial embed: Name prompt
+        name_prompt = disnake.Embed(title="Welcome to the Pokémon RPG!", description="Hi there! What's your name?", color=0x3498db)
+        await ctx.send(embed=name_prompt)
 
-async def select_starter(ctx):
+        user_response = await bot.wait_for("message", check=check, timeout=60)
+        user_name = user_response.content
 
-    # Create view with starter buttons
-    view = View()
-    for pokemon in ['Bulbasaur', 'Charmander', 'Squirtle']:
-        button = Button(label=pokemon)
-        view.add_item(button)
+        # Starter Pokemon selection
+        starter_options = [
+            disnake.OptionChoice(name="Bulbasaur", value="bulbasaur"),
+            disnake.OptionChoice(name="Charmander", value="charmander"),
+            disnake.OptionChoice(name="Squirtle", value="squirtle")
+        ]
+        starter_selection = disnake.Embed(title=f"Nice to meet you, {user_name}!", description="Let's choose your starter Pokémon.", color=0x27ae60)
+        starter_selection.set_footer(text="Choose wisely!")
+        await ctx.send(embed=starter_selection, options=[Option(name="starter", description="Select your starter Pokémon:", type=disnake.OptionType.STRING, choices=starter_options)])
 
-    # Display starter selection embed    
-    embed = disnake.Embed(title='Pick a Starter', color=0x00FF00)
-    await ctx.respond(embed=embed, view=view)
+        # Wait for the user's choice
+        interaction = await bot.wait_for("slash_command", check=lambda i: i.interaction.user == ctx.author)
+        chosen_starter = interaction.data["options"][0]["value"]
 
-async def get_starter_selection(ctx):
-    
-    # Wait for button click
-    button_ctx = await bot.wait_for('button_click')
+        # Fetch starter Pokémon details from PokeAPI
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f'https://pokeapi.co/api/v2/pokemon/{chosen_starter}/') as response:
+                data = await response.json()
 
-    # Fetch Pokemon data from PokeAPI v2
-    pokemon_name = button_ctx.component[0].label.lower()
-    pokemon_info = fetch_pokemon_info(pokemon_name)
+                name = data['name']
+                types = [t['type']['name'] for t in data['types']]
+                base_stats = [f"{stat['stat']['name']}: {stat['base_stat']}" for stat in data['stats']]
 
-    # Create Pokemon object
-    pokemon = Pokemon(name=pokemon_info['name'], description=pokemon_info['description'], sprite_url=pokemon_info['sprite_url'])
+                # Starter Pokemon details embed
+                starter_embed = disnake.Embed(title=f"Your starter Pokémon is {name}!", color=0x00ff00)
+                starter_embed.add_field(name="Types", value=', '.join(types), inline=False)
+                starter_embed.add_field(name="Base Stats", value='\n'.join(base_stats), inline=False)
+                starter_embed.set_thumbnail(url=data['sprites']['front_default'])
 
-    return pokemon
+                await ctx.send(embed=starter_embed)
 
-async def display_confirmation(ctx, trainer):
-
-    # Create embed
-    embed = disnake.Embed(title='You chose:', color=0x00FF00)
-    embed.add_field(name=trainer.starter.name, value=trainer.starter.description)
-    embed.set_thumbnail(url=trainer.starter.sprite_url) 
-
-    await ctx.send(embed=embed)
-
-def fetch_pokemon_info(pokemon_name):
-    api_url = f"https://pokeapi.co/api/v2/pokemon/{pokemon_name}"
-    response = requests.get(api_url)
-    data = response.json()
-
-    # Extract relevant information
-    description = "No description available."
-    if data['species']['url']:
-        species_info = requests.get(data['species']['url']).json()
-        for entry in species_info['flavor_text_entries']:
-            if entry['language']['name'] == 'en':
-                description = entry['flavor_text']
-                break
-
-    sprite_url = data['sprites']['front_default']
-
-    return {'name': pokemon_name.capitalize(), 'description': description, 'sprite_url': sprite_url}
+    except asyncio.TimeoutError:
+        await ctx.send("Sorry, you took too long to respond.")
 
 bot.run(os.environ['TOKEN'])
