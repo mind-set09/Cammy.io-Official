@@ -1,44 +1,18 @@
-import os
 import disnake
-import requests
 from disnake.ext import commands
-from disnake.ui import Button, View
-from databases import Database
+from disnake.ext.commands import Context, Option
+import random
+import aiohttp
 
-# Database models
-from .models import Trainer, Pokemon
+intents = disnake.Intents.default()
+intents.typing = False
+intents.presences = False
 
-class Trainer:
-    def __init__(self, id, name, starter):
-        self.id = id
-        self.name = name
-        self.starter = starter
+bot = commands.Bot(command_prefix='/', intents=intents)
 
-    async def save(self):
-        # Connect to the database
-        database = Database(os.environ['DATABASE_URL'])
-        await database.connect()
-
-        # Define the query to insert a new trainer
-        query = """
-        INSERT INTO trainers (id, name, starter)
-        VALUES (:id, :name, :starter)
-        """
-        
-        # Execute the query with parameters
-        await database.execute(query, values={"id": self.id, "name": self.name, "starter": self.starter.name})
-
-        # Disconnect from the database
-        await database.disconnect()
-
-class Pokemon:
-    def __init__(self, name, description, sprite_url):
-        self.name = name
-        self.description = description
-        self.sprite_url = sprite_url
-
-
-bot = commands.Bot(command_prefix='/')
+@bot.event
+async def on_ready():
+    print(f'Logged in as {bot.user.name}')
 
 @bot.slash_command(name="start", description="Begin your Pokémon adventure!")
 async def start(ctx: Context):
